@@ -14,13 +14,13 @@ class PingPongTest
   with BeforeAndAfterAll {
 
   "A pong actor" must {
-    "send back a PongMessage when receives a PingMessage" in {
+    "send back a PongMessage when receiving a PingMessage" in {
       val actorRef = TestActorRef[Pong]
       actorRef ! PingMessage
       expectMsg(PongMessage)
     }
 
-    "be stopped receiving a StopMessage" in {
+    "be stopped when receiving a StopMessage" in {
       val pongActorToBeStopped = TestActorRef[Pong]
       pongActorToBeStopped ! StopMessage
       val pongActorRef: ActorRef = pongActorToBeStopped.watch(pongActorToBeStopped)
@@ -30,7 +30,7 @@ class PingPongTest
 
 
   "A ping actor" must {
-    "send back a PingMessage when receives a StartMessage" in {
+    "send back a PingMessage when receiving a StartMessage" in {
       val probe1 = TestProbe()
       val pongActorRef = TestActorRef(new Pong)
       val pingActorRef = TestActorRef(new Ping(pongActorRef))
@@ -39,7 +39,7 @@ class PingPongTest
       probe1.send(pongActorRef, PingMessage)
     }
 
-    "send back a PingMessage when receives a PongMessage" in {
+    "send back a PingMessage when receiving a PongMessage" in {
       val probe1 = TestProbe()
       val pongActorRef = TestActorRef(new Pong)
       val pingActorRef = TestActorRef(new Ping(pongActorRef))
