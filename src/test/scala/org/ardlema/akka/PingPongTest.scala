@@ -1,8 +1,10 @@
 package org.ardlema.akka
 
 import akka.actor.{ActorRef, ActorSystem}
-import akka.testkit.{ImplicitSender, TestKit, TestActorRef}
+import akka.testkit.{TestProbe, ImplicitSender, TestKit, TestActorRef}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, WordSpecLike}
+
+
 
 class PingPongTest
   extends TestKit(ActorSystem("testSystem"))
@@ -26,20 +28,37 @@ class PingPongTest
     }
   }
 
-/*
+
   "A ping actor" must {
-    "send back a PingMessage when receives a PongMessage" in {
+    "send back a PingMessage when receives a StartMessage" in {
+      val probe1 = TestProbe()
       val pongActorRef = TestActorRef(new Pong)
       val pingActorRef = TestActorRef(new Ping(pongActorRef))
+      pingActorRef ! (probe1.ref)
       pingActorRef ! StartMessage
-      pongActorRef.underlyingActor.receive(PingMessage)
+      probe1.send(pongActorRef, PingMessage)
     }
 
-    "be stopped receiving a StopMessage" in {
-      val pongActorToBeStopped = TestActorRef[Pong]
-      pongActorToBeStopped ! StopMessage
-      val pongActorRef: ActorRef = pongActorToBeStopped.watch(pongActorToBeStopped)
-      assert(pongActorRef.isTerminated)
+    "send back a PingMessage when receives a PongMessage" in {
+      val probe1 = TestProbe()
+      val pongActorRef = TestActorRef(new Pong)
+      val pingActorRef = TestActorRef(new Ping(pongActorRef))
+      pingActorRef ! (probe1.ref)
+      pingActorRef ! PongMessage
+      probe1.send(pongActorRef, PingMessage)
     }
-  }*/
+
+    "send a StopMessage when the count reaches the upper limit" in {
+      val probe1 = TestProbe()
+      val pongActorRef = TestActorRef(new Pong)
+      val pingActorRef = TestActorRef(new Ping(pongActorRef))
+      pingActorRef ! (probe1.ref)
+      for (i<-1 to 4)
+        pingActorRef ! PongMessage
+      probe1.send(pongActorRef, StopMessage)
+      assert(pongActorRef.isTerminated)
+      assert(pingActorRef.isTerminated)
+    }
+  }
+
 }

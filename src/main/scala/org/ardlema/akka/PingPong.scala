@@ -9,14 +9,14 @@ case object StopMessage
 
 class Ping(pong: ActorRef) extends Actor {
   var count = 0
-  def incrementAndPrint { count += 1; println(count)}
+  def incrementAndPrint { count += 1 }
   def receive = {
     case StartMessage =>
       incrementAndPrint
       pong ! PingMessage
     case PongMessage =>
       incrementAndPrint
-      if (count > 5) {
+      if (count > 3) {
         sender ! StopMessage
         //println("ping stopped")
         context.stop(self)
