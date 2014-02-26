@@ -1,9 +1,8 @@
-package org.ardlema.akkaexamples
+package org.ardlema.akka
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.testkit.{ImplicitSender, TestKit, TestActorRef}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, WordSpecLike}
-import org.ardlema.akka._
 
 class PingPongTest
   extends TestKit(ActorSystem("testSystem"))
